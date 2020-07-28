@@ -1,0 +1,33 @@
+<div class = "course-info-wrapper">
+		
+		<input type="hidden" id="course-info-dtl-form-flag" th:value="${from}">
+		
+ 		<div class="row">
+			<form id="course-info-dtl-from" class="form-horizontal" method="post" th:action="@{/CourseManage/courseModify.do}">
+				<input type="hidden" name="id" th:value="${courseBean?.id}">
+			
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1" for="courseName">课程名</label>
+					<div class="col-xs-8 col-sm-6">
+						<input class="form-control" type="text" required id="courseName" name="name"  placeholder="" th:value="${courseBean?.name}" />
+					</div>
+				</div>
+				
+				
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1" for="description">描述</label>
+					<div class="col-xs-8 col-sm-6">
+						<textarea   class="form-control" rows="3" name="description" id="description" th:text="${courseBean?.description}"></textarea>
+					</div>
+				</div>
+				
+	
+				<div class="form-group text-center">
+					<button id="course-info-dtl-form-submitBtn"  type="submit" class="btn btn-primary" data-loading-text="处理中.." th:text="'teacherChgCourse' == ${from} ? '修改' : ' 添加'     ">修改</button>
+					<button id="course-info-dtl-form-returnBtn" class="btn btn-primary">返回</button>
+				</div>
+			</form>
+ 		</div>
+ 		
+ 		<script th:src="@{/static/course_manage/js/course_info.js}"></script>
+</div>

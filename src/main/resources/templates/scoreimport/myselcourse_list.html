@@ -1,0 +1,35 @@
+<div>
+		<table class="table  table-bordered  table-hover  table-condensed main-sub-content-list-table">
+			<caption>学生信息</caption>
+			<thead>
+				<tr>
+					<th class="text-center">选择</th>
+					<th class="text-center">课程名</th>
+					<th class="text-center">学年</th>
+					<th class="text-center">学期</th>
+					<th class="text-center">学生</th>
+					<th class="text-center">分数</th>
+				</tr>
+	    	<tbody>
+	    		<tr class="myselcourse-list-table-row"  th:each="myselcourse, myselcourseIterStat:${pageInfo.list}">
+	    			<td class="text-center"><input class="myselcourse-list-table-col-selectRadio" type="radio" name="courseId" th:data-teacher-course-id="${myselcourse.teacherCourseId}" th:data-student-account-name="${myselcourse.accountName}" th:data-course-name="${myselcourse.courseName}"  th:data-student-name="${myselcourse.studentName}"  th:data-score="${myselcourse.score}"/></td>
+	    			<td class="text-center" th:text="${myselcourse.courseName}"></td>
+	    			<td class="text-center" th:text="${myselcourse.year}"></td>
+	    			<td class="text-center" owl:enumVal="${myselcourse.semester}" owl:enumKey="'semester'" ></td>
+	    			<td class="text-center" th:text="${myselcourse.studentName} + '(' + ${myselcourse.accountName} + ')'"></td>
+	    			<td class="text-center" th:text="${myselcourse.score}"></td>
+	    		</tr>
+	    	</tbody>
+	    	
+		</table>
+		
+	  	<!-- 分页 -->
+	  	<div th:replace="common/pager :: pager(${pageInfo}, scoreimport_manage_onQryCourseListFormSubmit)"></div>
+  	
+	  	<div class="main-sub-content-list-operator-btn-list">
+	  		<input id="myselcourse-list-scoreUpdateBtn" class="btn btn-primary" type="button" th:data-target-url="@{/ScoreImport/toUpdateScore.do}" th:data-updata-score-url="@{/ScoreImport/doUpdateScore.do}"  data-loading-text="处理中.." value="修改分数"/>
+	  	</div>
+  	
+	
+	<script th:src="@{/static/scoreimport/js/myselcourse_list.js}"></script>
+</div>

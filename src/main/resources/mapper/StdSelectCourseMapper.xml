@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.stdselcourse.mapper.StdSelectCourseMapper" >
+
+	<resultMap type="schoolsys.stdselcourse.bean.StudentCourseBean" id="StudentCourseBeanResultMap">
+		<id column="teacher_course_id" property="teacherCourseId" jdbcType="INTEGER"/>
+		<id column="account_name" property="accountName" jdbcType="VARCHAR"/>
+		<result column="teacher_account_name" property="teacherAccountName" jdbcType="VARCHAR"/>
+		<result column="teacher_name" property="teacherName" jdbcType="VARCHAR"/>
+		<result column="student_name" property="studentName" jdbcType="VARCHAR"/>
+		<result column="course_id" property="courseId" jdbcType="INTEGER"/>
+		<result column="course_name" property="courseName" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="INTEGER"/>
+		<result column="semester" property="semester" jdbcType="VARCHAR"/>
+		<result column="score" property="score" jdbcType="INTEGER"/>
+		<result column="teacher_course_mark" property="teacherCourseMark" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+
+	<select id="qryCourseList" resultMap="StudentCourseBeanResultMap">
+			SELECT 
+			    sc.account_name,
+			    sc.score,
+			    tc.account_name teacher_account_name,
+			    tc.id teacher_course_id,
+			    c.id course_id,
+			    c.name course_name,
+			    tc.year,
+			    tc.semester,
+			    tc.mark teacher_course_mark,
+			    tc.status,
+			    sc.create_time,
+			    u.name teacher_name,
+			    su.name student_name
+			FROM
+			    student_course sc,
+			    teacher_course tc,
+			    course c,
+			    account a,
+			    user_dtl u,
+			    account sa,
+			    user_dtl su
+			where sc.teacher_course_id = tc.id
+			 and c.id = tc.course_id
+			 and a.id = u.acct_id
+			 and a.account_name = tc.account_name
+			 and sa.account_name = sc.account_name
+			 and sa.id = su.acct_id
+		    <if test="accountName != null and accountName != ''">
+		        and sc.account_name = #{accountName}
+		    </if>
+		    <if test="accountNameLike != null and accountNameLike != ''">
+		        and sc.account_name like concat('%', #{accountNameLike}, '%')
+		    </if>  
+		    <if test="courseName != null and courseName != ''">
+		        and c.name like concat('%', #{courseName}, '%')
+		    </if>
+		    <if test="status != null  and status != ''">
+		        and tc.status = #{status}
+		    </if>
+		    <if test="year != null  and year != ''">
+		        and tc.year = #{year}
+		    </if>
+		    <if test="semester != null  and semester != ''">
+		        and tc.semester = #{semester}
+		    </if>
+		    <if test="studentName != null  and studentName != ''">
+		        and su.name like concat('%', #{studentName}, '%')
+		    </if>
+		    <if test="teacherName != null  and teacherName != ''">
+		        and u.name like concat('%', #{teacherName}, '%')
+		    </if>
+		    <if test="teacherAccountName != null  and teacherAccountName != ''">
+		        and a.account_name = #{teacherAccountName}
+		    </if>  
+		    <if test="teacherAccountNameLike != null  and teacherAccountNameLike != ''">
+		        and a.account_name like concat('%', #{teacherAccountNameLike}, '%')
+		    </if>
+		    
+		    <if test="scoreStatus != null  and scoreStatus != ''">
+		    	<if test='scoreStatus == "0"'>
+		    	and sc.score is null
+		    	</if>
+		    	<if test='scoreStatus == "1"'>
+		    	and sc.score is not null 
+		    	</if>		    	
+		        
+		    </if>
+		    
+			ORDER BY sc.create_time DESC
+	</select>
+	
+	<insert id="addCourse" >
+		insert into student_course(account_name, teacher_course_id, create_time) values(#{accountName}, #{teacherCourseId}, now())
+	</insert>
+	
+	<delete id="deleteCourse"  parameterType="int[]">
+		delete from student_course 
+		where account_name = #{accountName}
+		  and teacher_course_id in
+		<foreach collection="ids" item = "id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<update id="updateScore" parameterType="schoolsys.stdselcourse.bean.StudentCourseBean">
+		update student_course set score = #{score}
+		where account_name  = #{accountName} 
+		  and teacher_course_id = #{teacherCourseId}
+	</update>
+	
+	
+</mapper>
+
+

@@ -1,0 +1,84 @@
+<div class = "scoreqry-wrapper">
+		<div class = "row">
+			<h3 class="col-xs-12 text-primary text-center">成绩查询</h3>
+		</div>
+		
+		<div class="main-sub-content" id="scoreqry-qry-list-div">
+			<div class = "row">
+				<form id="scoreqry-qry-form" class="form-horizontal" th:action="@{/ScoreQry/qryScoreList.do}"  method="post">
+					<input class="form-control" type="hidden"  id="scoreqry-qry-form-pageNum" name="pageNum"/>
+				
+					<div class="form-group">
+						<label class="control-label col-sm-2 " for="courseName">课程名：</label>
+						<div class="col-sm-3" >
+							<input class="form-control" type="text"  id="courseName" name="courseName" placeholder="" />
+						</div>
+						
+						<label class="control-label col-sm-2" for="score_status">评分状态：</label>
+						<div class="col-sm-3">
+							<select class="form-control" id="score_status"  name="scoreStatus" owl:selectOp owl:enumKey="'score_status'">
+								<option value="0">test1</option>
+								<option value="1">test2</option>
+							</select>	
+						</div>
+						
+						
+						<div class="col-sm-1">
+							<button id="scoreqry-qry-list-btn" class="btn btn-primary"  data-loading-text="查询中.." type="submit">查询</button>
+						</div>
+					</div>
+					
+					
+					<!-- 更多条件 -->
+		  			<div class="panel-collapse collapse" id="scoreqry-more-condition">
+						<div class="form-group">
+							<label class="control-label  col-sm-2" for="teacherName">教师名：</label>
+							<div class="col-sm-3">
+								<input class="form-control" type="text" id="teacherName" name="teacherName" />
+							</div>
+						
+							
+							<label class="control-label  col-sm-2" for="teacherAccountName">教师工号：</label>
+							<div class="col-sm-3">
+								<input class="form-control" type="text" id="teacherAccountName" name="teacherAccountNameLike" />
+							</div>
+
+						</div>	
+						
+						<div class="form-group">
+							<label class="control-label col-sm-2 " for="scoreqry-courseYear">学年：</label>
+							<div class="col-sm-3" >
+								<input class="form-control" type="text"  id="scoreqry-courseYear" name="year" placeholder="" />
+							</div>
+						
+							<label class="control-label col-sm-2" for="semester">学期：</label>
+							<div class="col-sm-3">
+								<select class="form-control" id="semester"  name="semester" owl:selectOp owl:enumKey="'semester'">
+									<option value="0">test1</option>
+									<option value="1">test2</option>
+								</select>	
+							</div>
+						</div>					
+		  			</div>
+		  			
+		  			<div class="form-group">
+						<div class="col-sm-2" style="text-align: right;">
+			  				<a id="scoreqry-more-condition-link" data-toggle="collapse" href="#scoreqry-more-condition"><span id="scoreqry-more-condition-text">更多</span><span  id="scoreqry-more-condition-icon" class="glyphicon glyphicon-menu-down"></span></a>
+						</div>
+					</div>
+					
+		  			
+				</form>
+				
+				
+			</div>
+			<!-- 查询列表 -->
+	 		<div id="scoreqry-list-result-div">
+	 		</div>
+ 		</div>
+ 		
+ 		<div id="scoreqry-second-page-div" class="main-sub-content">
+ 		</div>
+ 		
+ 		<script th:src="@{/static/scoreqry/js/score_qry.js}"></script>
+</div>

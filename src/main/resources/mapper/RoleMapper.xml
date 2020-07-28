@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.role.mapper.RoleMapper" >
+
+	<sql id="roleAllField">
+			r.id role_id,
+			r.name role_name,
+			r.mark role_mark	
+	</sql>
+
+	
+	<select id="qryRoleList" resultMap="schoolsys.user.mapper.UserMapper.SysRoleBeanResultMap">
+			SELECT 
+				<include refid="roleAllField"></include>
+			FROM
+			    sys_role r
+		<where>
+		    <if test="name != null and name != ''">
+		        and r.name like concat('%', #{name}, '%')
+		    </if>
+		    <if test="chName != null and chName != ''">
+		        and r.name in (select d.item_id from sys_dict_item d where d.item_name like concat('%', #{chName}, '%'))
+		    </if>
+		</where>
+	</select>
+	
+	<insert id="addRole"  useGeneratedKeys="true" keyProperty="id"  parameterType="schoolsys.user.bean.SysRoleBean">
+		insert into sys_role(name, mark) values(#{name}, #{mark})
+	</insert>
+	
+	<insert id="insertRolePrivilege">
+		INSERT INTO sys_role_privilege (
+			role_id,
+			res_id,
+			permission
+		)
+		VALUES(
+			#{roleId},
+			#{resId},
+			#{permission}
+		)
+	</insert>
+	
+	
+	<select id="qryRoleByName" resultMap="schoolsys.user.mapper.UserMapper.SysRoleBeanResultMap">
+			SELECT 
+				<include refid="roleAllField"></include>
+			FROM
+			    sys_role r
+			where
+				r.name = #{name}
+	</select>
+	
+	<select id="qryRoleById" resultMap="schoolsys.user.mapper.UserMapper.SysRoleBeanResultMap">
+			SELECT 
+				<include refid="roleAllField"></include>
+			FROM
+			    sys_role r
+			where r.id = #{id}
+	</select>
+	
+	<update id = "updateRole"  parameterType="schoolsys.user.bean.SysRoleBean">
+		update sys_role 
+		set name = #{name},
+		    mark = #{mark}
+		where
+		    id = #{id}
+	</update>
+	
+	<delete id="deleteRole"  parameterType="int[]">
+		delete from sys_role where id in
+		<foreach collection="array" item = "id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteRolePrivilege">
+		delete from sys_role_privilege where role_id = #{roleId}	
+	</delete>
+	
+</mapper>
+
+

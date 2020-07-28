@@ -1,0 +1,68 @@
+<div class = "role-info-wrapper">
+		
+		<input type="hidden" id="role-info-dtl-form-flag" th:value="${from}">
+		
+ 		<div class="row">
+			<form id="role-info-dtl-from" class="form-horizontal" method="post" th:action="@{/RoleManage/roleModify.do}">
+				<input type="hidden" name="id" th:value="${roleBean?.id}">
+			
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1 required" for="roleId">角色id</label>
+					<div class="col-xs-8 col-sm-6">
+						<input class="form-control" type="text" required id="roleId" name="name"  placeholder="" th:value="${roleBean?.name}" />
+					</div>
+				</div>
+			
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1 required" for="roleName">角色名</label>
+					<div class="col-xs-8 col-sm-6">
+						<input class="form-control" type="text" required id="roleName" name="chName"  placeholder="" th:value="${@sysDictItemService.getItemName('sys_role', roleBean?.name)}" />
+					</div>
+				</div>
+				
+				
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1" for="mark">描述</label>
+					<div class="col-xs-8 col-sm-6">
+						<input  class="form-control" type="text" name="mark" id="mark" th:value="${roleBean?.mark}"></input>
+					</div>
+				</div>
+				
+				  <div class="form-group">
+				  	<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1" for="privilege">权限</label>
+				    <div class="col-xs-8 col-sm-6">
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray" value="userAdmin" th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'userAdmin')}"> 用户管理菜单
+						</label>
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray" value="roleAdmin"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'roleAdmin')}"> 角色管理菜单
+						</label>
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray"  value="courseAdmin"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'courseAdmin')}"> 课程管理菜单
+						</label>
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray"  value="stdSelectCourse"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'stdSelectCourse')}"> 学生选课菜单
+						</label>
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray"  value="scoreQry"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'scoreQry')}"> 成绩查询菜单
+						</label>	
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray"  value="tchSelectCourse"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'tchSelectCourse')}"> 教师选课菜单
+						</label>
+						<label class="checkbox-inline checkbox-inline-left-margin">
+							  <input type="checkbox" name="privilegeArray"  value="scoreImport"  th:checked="${T(schoolsys.base.utils.PrivilegeUtil).hasResPermission(roleBean, 'scoreImport')}"> 成绩录入菜单
+						</label>							
+				    </div>
+				  </div>
+				
+	
+				<div class="form-group text-center">
+					<button id="role-info-dtl-form-submitBtn"  type="submit" class="btn btn-primary" data-loading-text="处理中.." th:text="'adminAddRole' != ${from} ? '修改' : ' 添加'     ">修改</button>
+					<button id="role-info-dtl-form-returnBtn" class="btn btn-primary">返回</button>
+				</div>
+			</form>
+ 		</div>
+ 		
+ 		
+ 		<script th:src="@{/static/role_manage/js/role_info.js}"></script>
+</div>

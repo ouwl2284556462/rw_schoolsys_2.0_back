@@ -1,0 +1,32 @@
+<div>
+		<table class="table  table-bordered  table-hover  table-condensed main-sub-content-list-table">
+			<caption>课程信息</caption>
+			<thead>
+				<tr>
+					<th class="text-center">选择</th>
+					<th class="text-center">课程名</th>
+					<th class="text-center">创建时间</th>
+					<th class="text-center ">描述</th>
+				</tr>
+	    	<tbody>
+	    		<tr class="course-list-table-row"  th:each="course, courseIterStat:${pageInfo.list}">
+	    			<td class="text-center"><input class="course-list-table-col-selectCheckBox" type="checkbox" th:data-course-id="${course.id}"/></td>
+	    			<td class="text-center" th:text="${course.name}"></td>
+	    			<td class="text-center" th:text="${#dates.format(course.createTime, 'yyyy-MM-dd')}"></td>
+	    			<td class="text-center" th:text="${course.description}"></td>
+	    		</tr>
+	    	</tbody>
+	    	
+		</table>
+		
+	  	<!-- 分页 -->
+	  	<div th:replace="common/pager :: pager(${pageInfo}, course_manage_onQryCourseListFormSubmit)"></div>
+  	
+	  	<div class="main-sub-content-list-operator-btn-list">
+	  		<input id="course-list-addBtn" class="btn btn-success" type="button" th:data-target-url="@{/CourseManage/toAddCourse.do}"  data-loading-text="处理中.." value="添加课程"/>
+	  		<input id="course-list-chgBtn" class="btn btn-primary" type="button" th:data-target-url="@{/CourseManage/toChgCourse.do}"  data-loading-text="处理中.." value="修改信息"/>
+	  		<input id="course-list-delBtn" class="btn btn-danger" type="button" th:data-target-url="@{/CourseManage/toDelCourse.do}"  data-loading-text="处理中.." value="删除课程"/>
+	  	</div>
+	
+	<script th:src="@{/static/course_manage/js/course_list.js}"></script>
+</div>

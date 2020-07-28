@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.dict.mapper.SysDictItemMapper" >
+	<resultMap type="schoolsys.dict.bean.SysDictItemBean" id="SysDictItemBeanResultMap">
+		<result column="group_id" property="groupId" jdbcType="VARCHAR"/>
+		<result column="item_id" property="itemId" jdbcType="VARCHAR"/>
+		<result column="item_name" property="itemName" jdbcType="VARCHAR"/>
+		<result column="sort" property="sort" jdbcType="INTEGER"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="mark" property="mark" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="SysDictItemAllFields">
+			group_id,
+			item_id,
+			item_name,
+			sort,
+			description,
+			mark
+	</sql>
+	
+	<select id="findSysDictItemBeansByGroupId" resultMap="SysDictItemBeanResultMap">
+		SELECT
+			<include refid="SysDictItemAllFields"></include>
+		FROM
+			sys_dict_item
+		WHERE
+			group_id = #{groupId}
+		order by sort
+	</select>
+	
+	<select id="getDictItem"  resultMap="SysDictItemBeanResultMap">
+		SELECT
+			<include refid="SysDictItemAllFields"></include>
+		FROM
+			sys_dict_item
+		WHERE
+			group_id = #{groupId}
+		and item_id = #{itemId}	
+	</select>
+	
+	<insert id="insertDictItem" parameterType="schoolsys.dict.bean.SysDictItemBean">
+		INSERT INTO sys_dict_item (
+			group_id,
+			item_id,
+			item_name,
+			sort
+		)
+		VALUES(
+			#{groupId},
+			#{itemId},
+			#{itemName},
+			#{sort}
+		)
+	</insert>
+	
+	<update id = "updateDictItem" parameterType="schoolsys.dict.bean.SysDictItemBean">
+		update sys_dict_item
+		   set item_id = #{itemId},
+		       item_name = #{itemName}
+		where group_id = #{groupId}
+		  and item_id = #{oldItemId}
+	</update>
+	
+	<delete id = "delDictItem">
+		delete from sys_dict_item 
+		where group_id = #{groupId}
+		  and item_id = #{itemId}
+	</delete>
+</mapper>
+
+

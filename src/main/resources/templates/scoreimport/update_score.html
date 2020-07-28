@@ -1,0 +1,26 @@
+<div>
+		<div class="row">
+			<div id="role-info-dtl-from" class="form-horizontal" >
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1">课程名称</label>
+					<div class="col-xs-8 col-sm-6" >
+						<p class="form-control-static" th:text="${courseBean.courseName}"></p>
+					</div>
+				</div>
+			
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1">学生名</label>
+					<div class="col-xs-8 col-sm-6" >
+						<p class="form-control-static" th:text="${courseBean.studentName}"></p>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="control-label col-xs-3 col-sm-2 col-sm-offset-1" for="update-score-page-score">分数</label>
+					<div class="col-xs-8 col-sm-6">
+						<input  class="form-control" type="number" id="update-score-page-score" th:value="${courseBean.score}"></input>
+					</div>
+				</div>
+			</div>
+ 		</div>
+</div>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.teachselcourse.mapper.TeachSelCourseMapper" >
+
+	<resultMap type="schoolsys.teachselcourse.bean.TeacherCourseBean" id="TeacherCourseBeanResultMap">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+		<result column="year" property="year" jdbcType="INTEGER"/>
+		<result column="semester" property="semester" jdbcType="VARCHAR"/>
+		<result column="mark" property="mark" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		
+		<association property="course" columnPrefix = "course_" resultMap="schoolsys.course.mapper.CourseMapper.CourseBeanResultMap"  javaType="schoolsys.course.bean.CourseBean"></association>
+	</resultMap>
+	
+	<sql id="teacherCourseAllField">
+		  t.id,
+		  t.account_name,
+		  t.year,
+		  t.semester,
+		  t.course_id,
+		  t.create_time,
+		  t.mark,
+		  t.status,
+			<include refid="schoolsys.course.mapper.CourseMapper.courseAllField">
+				<property name="table_alias" value="c"/>
+				<property name="col_alias_prefix" value="course_"/>
+			</include>	
+	</sql>
+
+	
+	<select id="qryTeacherCourseListByPage" resultMap="TeacherCourseBeanResultMap">
+			SELECT 
+			<include refid="teacherCourseAllField">
+			</include>,
+			 u.name user_name
+			FROM
+			    teacher_course t,
+			    course c,
+			    account a,
+			    user_dtl u
+			where t.course_id = c.id
+			 and a.id = u.acct_id
+			 and a.account_name = t.account_name
+		    <if test="accountName != null  and accountName != ''">
+		        and t.account_name = #{accountName}
+		    </if>
+		    <if test="accountNameLike != null  and accountNameLike != ''">
+		        and t.account_name like concat('%', #{accountNameLike}, '%')
+		    </if>		    
+		    <if test="course != null and course.name != null and course.name != ''">
+		        and c.name like concat('%', #{course.name}, '%')
+		    </if>
+		    <if test="status != null  and status != ''">
+		        and t.status = #{status}
+		    </if>
+		    <if test="year != null  and year != ''">
+		        and t.year = #{year}
+		    </if>
+		    <if test="semester != null  and semester != ''">
+		        and t.semester = #{semester}
+		    </if>
+		    <if test="userName != null  and userName != ''">
+		        and u.name like concat('%', #{userName}, '%')
+		    </if>	
+		    <if test="notStudentAccountName != null  and notStudentAccountName != ''">
+		        and t.id not in (select sc.teacher_course_id from student_course sc where sc.account_name = #{notStudentAccountName})
+		    
+		    
+		        and u.name like concat('%', #{userName}, '%')
+		    </if>	
+		    
+		order by t.create_time desc
+	</select>
+	
+	<insert id="insertCourse">
+		INSERT INTO teacher_course (
+			account_name,
+			course_id,
+			year,
+			semester,
+			create_time,
+			mark,
+			status
+		)
+		VALUES(
+			#{accountName},
+			#{course.id},
+			#{year},
+			#{semester},
+			now(),
+			#{mark},
+			#{status}
+		)
+	
+	</insert>
+	
+	<select id= "findCourseById"  resultMap="TeacherCourseBeanResultMap">
+			SELECT 
+				<include refid="teacherCourseAllField"></include>
+			FROM
+			    teacher_course t,
+			    course c
+			where t.course_id = c.id
+		     	and t.id = #{myselcourseId}
+	</select>
+	
+	<update id = "updateCourse"  parameterType="schoolsys.teachselcourse.bean.TeacherCourseBean">
+		update teacher_course 
+		set year = #{year},
+			semester = #{semester},
+			course_id = #{course.id},
+			mark = #{mark},
+			status = #{status}
+		where
+		    id = #{id}
+	</update>
+	
+	<delete id="deleteCourse"  parameterType="int[]">
+		delete from teacher_course where id in
+		<foreach collection="array" item = "id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+</mapper>
+
+

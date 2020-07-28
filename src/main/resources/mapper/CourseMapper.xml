@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.course.mapper.CourseMapper" >
+
+	<resultMap type="schoolsys.course.bean.CourseBean" id="CourseBeanResultMap">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="description" property="description" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="courseAllField">
+		    ${table_alias}.id ${col_alias_prefix}id, 
+		    ${table_alias}.name ${col_alias_prefix}name, 
+		    ${table_alias}.description ${col_alias_prefix}description, 
+		    ${table_alias}.create_time ${col_alias_prefix}create_time
+	</sql>
+
+	
+	<select id="qryCourseList" resultMap="CourseBeanResultMap">
+			SELECT 
+				<include refid="courseAllField">
+					<property name="table_alias" value="c"/>
+					<property name="col_alias_prefix" value=""/>
+				</include>
+			FROM
+			    course c
+		<where>
+		    <if test="name != null and name != ''">
+		        and c.name like concat('%', #{name}, '%')
+		    </if>
+		</where>
+		order by c.create_time desc
+	</select>
+	
+	<insert id="addCourse"  useGeneratedKeys="true" keyProperty="id"  parameterType="schoolsys.course.bean.CourseBean">
+		insert into course(name, description, create_time) values(#{name}, #{description}, now())
+	</insert>
+	
+	<select id="qryCourseByName" resultMap="CourseBeanResultMap">
+			SELECT 
+				<include refid="courseAllField">
+					<property name="table_alias" value="c"/>
+					<property name="col_alias_prefix" value=""/>
+				</include>
+			FROM
+			    course c
+			where
+				c.name = #{name}
+	</select>
+	
+	<select id="qryCourseById" resultMap="CourseBeanResultMap">
+			SELECT 
+				<include refid="courseAllField">
+					<property name="table_alias" value="c"/>
+					<property name="col_alias_prefix" value=""/>
+				</include>
+			FROM
+			    course c
+			where
+				c.id = #{courseId}
+	</select>
+	
+	<update id = "updateCourse"  parameterType="schoolsys.course.bean.CourseBean">
+		update course 
+		set name = #{name},
+		    description = #{description}
+		where
+		    id = #{id}
+	</update>
+	
+	<delete id="deleteCourse"  parameterType="int[]">
+		delete from course where id in
+		<foreach collection="array" item = "id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+
+

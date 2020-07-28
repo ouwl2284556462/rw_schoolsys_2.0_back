@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="schoolsys.user.mapper.UserMapper" >
+
+	<resultMap type="schoolsys.user.bean.SysRoleBean" id="SysRoleBeanResultMap">
+		<id column="role_id" property="id" jdbcType="INTEGER"/>
+		<result column="role_name" property="name" jdbcType="VARCHAR"/>
+		<result column="role_mark" property="mark" jdbcType="VARCHAR"/>
+		
+		<collection property="privileges" column="role_id" javaType="ArrayList"  select="qrySysRolePrivilegeByRoleId">
+        </collection>
+	</resultMap>	
+	
+	<resultMap type="schoolsys.user.bean.SysPrivilegeBean" id="SysPrivilegeBeanResultMap">
+		<id column="res_id" property="resId" jdbcType="VARCHAR"/>
+		<result column="permission" property="permission" jdbcType="VARCHAR"/>
+		<result column="mark" property="mark" jdbcType="VARCHAR"/>
+	</resultMap>
+
+
+	<resultMap type="schoolsys.user.bean.UserBean" id="UserBeanResultMap">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+		<result column="identity_Num" property="identityNum" jdbcType="VARCHAR"/>
+		<result column="identity_type" property="identityType" jdbcType="VARCHAR"/>
+		<result column="NAME" property="name" jdbcType="VARCHAR"/>
+		<result column="tel" property="tel" jdbcType="VARCHAR"/>
+		<result column="sex" property="sex" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		
+		<association property="role" resultMap="SysRoleBeanResultMap"  javaType="schoolsys.user.bean.SysRoleBean"></association>
+	</resultMap>
+	
+	<sql id="userInfoAllField">
+			a.id,
+			a.account_name,
+			a.PASSWORD,
+			a.create_time,
+			u.identity_Num,
+			u.identity_type,
+			u.NAME,
+			u.tel,
+			u.sex,
+			r.name role_name,
+			r.id role_id,
+			r.mark role_mark
+	</sql>
+
+
+
+	<!-- 插入账户信息 -->
+	<insert id="addAcctInfo"  useGeneratedKeys="true" keyProperty="id"  parameterType="schoolsys.user.bean.UserBean">
+		insert into account(account_name, password, create_time) values(#{accountName}, #{password}, now())
+	</insert>
+	
+	
+	<!-- 插入用户详细信息 -->
+	<insert id="addUseDtlInfo" parameterType="schoolsys.user.bean.UserBean">
+		INSERT INTO user_dtl (
+			acct_id,
+			NAME,
+			tel,
+			sex,
+			identity_Num,
+			identity_type
+		)
+		VALUES(
+			#{id},
+		    #{name},
+		    #{tel},
+		    #{sex},
+		    #{identityNum},
+		    #{identityType}
+		)
+	</insert>
+	
+	<insert id="insertSysUserRole">
+		INSERT INTO sys_user_role (
+			user_id,
+			role_id
+		)
+		VALUES(
+			#{userId},
+		    (select r.id from sys_role r where r.name = #{roleName})
+		)
+	</insert>
+	
+	
+	<select id="findUserById"  parameterType="int" resultMap="UserBeanResultMap">
+		SELECT
+			<include refid="userInfoAllField"></include>
+		FROM
+			account a
+		inner join user_dtl u on a.id = u.acct_id
+		left join sys_user_role ur on a.id = ur.user_id
+		left join sys_role r on ur.role_id = r.id
+		WHERE a.id = #{id}
+	</select>	
+	
+	
+	
+	<select id="findUserInfoByAccountName" resultMap="UserBeanResultMap">
+		SELECT
+			<include refid="userInfoAllField"></include>
+		FROM
+			account a
+		inner join user_dtl u on a.id = u.acct_id
+		left join sys_user_role ur on a.id = ur.user_id
+		left join sys_role r on ur.role_id = r.id
+		WHERE a.account_name = #{accountName}
+	</select>
+
+	<update id="updateUserDtl" parameterType="schoolsys.user.bean.UserBean">
+		UPDATE user_dtl
+		SET NAME = #{name},
+			 tel = #{tel},
+			 sex = #{sex},
+			 identity_Num = #{identityNum},
+			 identity_type = #{identityType}
+		WHERE
+			acct_id = #{id}
+	</update>
+	
+	<update id="updateUserPassword" parameterType="schoolsys.user.bean.UserBean">
+		UPDATE account
+		SET password = #{password}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<update id="updateUserPasswordById">
+		UPDATE account
+		SET password = #{newPassword}
+		WHERE
+			id = #{userId}
+	</update>
+	
+	
+	<update id="updateUserRoleByName">
+		update sys_user_role sr
+		set sr.role_id = (select r.id from sys_role r where r.name = #{roleName})
+		where 
+			sr.user_id = #{userId}
+	</update>
+	
+	<select id="qrySysRolePrivilegeByRoleId"  resultMap="SysPrivilegeBeanResultMap">
+		select p.res_id,
+			   p.permission,
+			   p.mark
+		from sys_role_privilege p
+		where role_id = #{roleId}
+	</select>
+	
+	
+	<select id="qryUserList" resultMap="UserBeanResultMap" parameterType="schoolsys.user.bean.UserBean">
+		SELECT
+			<include refid="userInfoAllField"></include>
+		FROM
+			account a
+		inner join user_dtl u on a.id = u.acct_id
+		left join sys_user_role ur on a.id = ur.user_id
+		left join sys_role r on ur.role_id = r.id
+		<where>
+		    <if test="accountName != null and accountName != ''">
+		        and a.account_name like concat('%', #{accountName}, '%')
+		    </if>
+		    <if test="tel != null and tel != ''">
+		        and u.tel like concat('%', #{tel}, '%')
+		    </if>	
+		    <if test="name != null and name != ''">
+		      	and u.NAME like concat('%', #{name}, '%')
+		    </if>
+		    <if test="sex != null and sex != ''">
+		       and   u.sex = #{sex}
+		    </if>		    
+		    <if test="identityNum != null and identityNum != ''">
+		       and u.identity_Num like concat('%', #{identityNum}, '%')
+		    </if>
+		    <if test="identityType != null and identityType != ''">
+		       and   u.identity_type = #{identityType}
+		    </if>	
+		    <if test="role != null and role.name != null and role.name != '' ">
+		        and  r.name = #{role.name}
+		    </if>
+		</where>
+		order by a.create_time desc
+	</select>
+	
+	<delete id="deleteAccount"  parameterType="int[]">
+		delete from account where id in
+		<foreach collection="array" item = "id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	
+</mapper>
+
+
