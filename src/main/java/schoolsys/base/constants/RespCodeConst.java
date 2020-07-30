@@ -6,5 +6,7 @@ package schoolsys.base.constants;
 public class RespCodeConst {
 	//成功
 	public final static String SUCCESS = "0";
+	//失败
+	public static final String FAIL = "-1";
 	
 }

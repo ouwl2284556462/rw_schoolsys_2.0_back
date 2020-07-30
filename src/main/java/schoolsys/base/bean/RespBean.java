@@ -2,9 +2,9 @@ package schoolsys.base.bean;
 
 import schoolsys.base.constants.RespCodeConst;
 
-public class RespBean<T> {
+public class RespBean {
 	private String code;
-	private T data;
+	private Object data;
 	
 	private RespBean (){
 	}
@@ -17,17 +17,25 @@ public class RespBean<T> {
 		this.code = code;
 	}
 
-	public T getData() {
+	public Object getData() {
 		return data;
 	}
 
-	public void setData(T data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 	
-	public static <E>RespBean<E> success(E data){
-		RespBean<E> result = new RespBean<>();
-		result.setCode(RespCodeConst.SUCCESS);
+	public static RespBean success(Object data){
+		return build(RespCodeConst.SUCCESS, data);
+	}
+
+	public static RespBean fail(Object data) {
+		return build(RespCodeConst.FAIL, data);
+	}
+	
+	public static RespBean build(String code, Object data) {
+		RespBean result = new RespBean();
+		result.setCode(code);
 		result.setData(data);
 		return result;
 	}

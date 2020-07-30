@@ -1,11 +1,6 @@
 package schoolsys.login.controller;
 
-import java.security.Principal;
-
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -33,9 +28,24 @@ public class LoginController {
 	 */
 	private UserService userService;
 	
+	@RequestMapping("/noLogin.do")
+	public RespBean noLogin() {
+		return RespBean.fail("请先登录");
+	}
+	
+	@RequestMapping("/loginFail.do")
+	public RespBean loginFail() {
+		return RespBean.fail("登录失败");
+	}
+	
+	@RequestMapping("/logoutSuccess.do")
+	public RespBean logoutSuccess() {
+		return RespBean.success("注销成功");
+	}
+	
 	
 	@RequestMapping("/loginSuccuess.do")
-	public RespBean<LoginUserBean> loginSuccuess(CsrfToken _csrf) {
+	public RespBean loginSuccuess(CsrfToken _csrf) {
 		LoginUserBean bean = new LoginUserBean();
 		
 		//token
@@ -53,7 +63,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/getToken.do")
-	public RespBean<CsrfTokenBean> getToken(CsrfToken _csrf) {
+	public RespBean getToken(CsrfToken _csrf) {
 		CsrfTokenBean bean = new CsrfTokenBean();
 		bean.setHeaderName(_csrf.getHeaderName());
 		bean.setToken(_csrf.getToken());
