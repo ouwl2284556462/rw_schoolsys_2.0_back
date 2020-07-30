@@ -2,20 +2,21 @@ package schoolsys.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
 
+import schoolsys.base.bean.RespBean;
 import schoolsys.base.constants.CommPageConst;
 import schoolsys.user.bean.UserBean;
 import schoolsys.user.service.UserService;
 
-@Controller
+@RestController
 @RequestMapping("/UserManage")
 @PreAuthorize("hasPermission('userAdmin', 'all')")
 /**
@@ -29,14 +30,6 @@ public class UserManageController {
 	 */
 	private UserService userService;
 	
-	@RequestMapping("/toUserManage.do")
-	/**
-	 * 跳转到用户管理页面
-	 * @return
-	 */
-	public String toUserManage() {
-		return "user_manage/user_manage";
-	}
 	
 	@RequestMapping("/qryUserList.do")
 	/**
@@ -46,11 +39,9 @@ public class UserManageController {
 	 * @param pageNum
 	 * @return
 	 */
-	public String qryUserList(Model model, UserBean userBean, @RequestParam(value="pageNum", defaultValue="1") Integer pageNum) {
-		
+	public RespBean qryUserList(UserBean userBean, @RequestParam(value="pageNum", defaultValue="1") Integer pageNum) {
 		PageInfo<UserBean> pageInfo = userService.qryUserListByPage(userBean, pageNum, CommPageConst.PAGE_PER_NUM);
-		model.addAttribute("pageInfo", pageInfo);
-		return "user_manage/user_list";
+		return RespBean.success(pageInfo);
 	}
 	
 	@RequestMapping("/deleteUserList.do")

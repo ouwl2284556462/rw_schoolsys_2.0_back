@@ -18,6 +18,11 @@ public class SysDictItemController {
 	
 	@Autowired
 	private SysDictItemService sysDictItemService;
+	
+	@RequestMapping("/getSysItems.do")
+	public RespBean getSysItemsByGrpId(String grpId){
+		return RespBean.success(sysDictItemService.findSysDictItemBeansByGroupId(grpId));
+	}
 
 	/**
 	 * 一次性获取多个不同枚举值
