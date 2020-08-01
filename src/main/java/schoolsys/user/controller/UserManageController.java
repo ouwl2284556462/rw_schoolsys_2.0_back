@@ -116,16 +116,13 @@ public class UserManageController {
 	
 	
 	@RequestMapping("/userInfoModify.do")
-	@ResponseBody
 	/**
 	 * 更新或新增用户
 	 * @param userBean
 	 * @param model
 	 * @return
 	 */
-	public String userInfoModify(UserBean userBean, Model model) {
-		String returnMsg = "Success";
-		
+	public RespBean userInfoModify(UserBean userBean, Model model) {
 		String errMsg = null;
 		if(userBean.getId() != null) {
 			//更新用户详细信息
@@ -138,11 +135,11 @@ public class UserManageController {
 		
 		
 		if(!StringUtils.isEmpty(errMsg)) {
-			returnMsg = errMsg;
+			return RespBean.fail(errMsg);
 		}
 		
 		
-		return returnMsg;
+		return RespBean.success("添加成功");
 	}
 	
 	
