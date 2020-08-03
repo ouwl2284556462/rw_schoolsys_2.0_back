@@ -8,6 +8,9 @@ spring:
   servlet:
      multipart:
         max-file-size: 5MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
 
 mybatis:
   mapperLocations: classpath:mapper/*.xml

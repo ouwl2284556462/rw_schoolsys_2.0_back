@@ -5,21 +5,25 @@
 	<sql id="roleAllField">
 			r.id role_id,
 			r.name role_name,
-			r.mark role_mark	
+			r.mark role_mark
 	</sql>
 
 	
 	<select id="qryRoleList" resultMap="schoolsys.user.mapper.UserMapper.SysRoleBeanResultMap">
 			SELECT 
-				<include refid="roleAllField"></include>
+				<include refid="roleAllField"></include>,
+				d.item_name  chName
 			FROM
-			    sys_role r
+			    sys_role r,
+			    sys_dict_item d
 		<where>
+		        and d.item_id = r.name
+		        and d.group_id = 'sys_role'
 		    <if test="name != null and name != ''">
 		        and r.name like concat('%', #{name}, '%')
 		    </if>
 		    <if test="chName != null and chName != ''">
-		        and r.name in (select d.item_id from sys_dict_item d where d.item_name like concat('%', #{chName}, '%'))
+		        and d.item_name like concat('%', #{chName}, '%')
 		    </if>
 		</where>
 	</select>

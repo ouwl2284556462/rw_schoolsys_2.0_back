@@ -24,7 +24,7 @@ public interface UserService extends UserDetailsService{
 	//查询用户列表
 	public PageInfo<UserBean> qryUserListByPage(UserBean userBean, int pageNum, int pagePerNum);
 	//删除用户
-	public void deleteUser(String[] ids);
+	public void deleteUser(Integer[] ids);
 	//根据id查找用户
 	public UserBean findUserById(int id);
 	//更新密码

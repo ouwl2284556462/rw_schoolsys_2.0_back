@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
@@ -45,73 +44,27 @@ public class UserManageController {
 	}
 	
 	@RequestMapping("/deleteUserList.do")
-	@ResponseBody
 	/**
 	 * 删除用户
 	 * @param ids
 	 * @return
 	 */
-	public String deleteUserList(@RequestParam(value = "ids[]") String[] ids) {
-		userService.deleteUser(ids);
-		return "Success";
-	}
-	
-	@RequestMapping("/toChgUserInfo.do")
-	/**
-	 * 获取用户详细信息，并跳转到用户详细信息页面
-	 * @param model
-	 * @param userId
-	 * @return
-	 */
-	public String toChgUserInfo(Model model, int userId) {
-		//获取用户详细信息
-		UserBean userBean = userService.findUserById(userId);
-		model.addAttribute("userBean", userBean);
-		model.addAttribute("from", "adminChgInfo");
-		return "workspace/user_info";
-	}
-	
-	
-	@RequestMapping("/toAddUser.do")
-	/**
-	 * 获取用户详细信息，并跳转到用户详细信息页面
-	 * 
-	 * @param model
-	 * @param userId
-	 * @return
-	 */
-	public String toAddUser(Model model) {
-		model.addAttribute("from", "adminAddUser");
-		return "workspace/user_info";
-	}
-		
-		
-	
-	@RequestMapping("/toChgPassword.do")
-	/**
-	 * 跳转到密码修改页面
-	 * @param model
-	 * @param userId
-	 * @return
-	 */
-	public String toChgPassword(Model model, int userId) {
-		model.addAttribute("userId", userId);
-		model.addAttribute("from", "adminChgInfo");
-		return "workspace/password_chg";
+	public RespBean deleteUserList(Integer[] userIds) {
+		userService.deleteUser(userIds);
+		return RespBean.success("删除成功");
 	}
 	
 	
 	@RequestMapping("/changePassword.do")
-	@ResponseBody
 	/**
 	 * 修改密码
 	 * @param userId
 	 * @param newPassword
 	 * @return
 	 */
-	public String changePassword(int userId, String newPassword) {
+	public RespBean changePassword(int userId, String newPassword) {
 		userService.updatePassword(userId, newPassword);
-		return "Success";
+		return RespBean.success("修改成功");
 	}
 	
 	
@@ -142,21 +95,4 @@ public class UserManageController {
 		return RespBean.success("添加成功");
 	}
 	
-	
-	
-	
-	@RequestMapping("/updateUserDtl.do")
-	@ResponseBody
-	/**
-	 * 更新用户详细信息
-	 * @param userBean
-	 * @param model
-	 * @return
-	 */
-	public String updateUserDtl(UserBean userBean, Model model) {
-		//更新用户详细信息
-		userService.updateUserDtl(userBean);
-		model.addAttribute("userBean", userBean);
-		return "Success";
-	}
 }

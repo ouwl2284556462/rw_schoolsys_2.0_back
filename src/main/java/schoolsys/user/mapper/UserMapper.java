@@ -56,7 +56,7 @@ public interface UserMapper {
 	 * 删除用户
 	 * @param ids
 	 */
-	public void deleteAccount(String[] ids);
+	public void deleteAccount(Integer[] ids);
 
 	/**
 	 * 根据id查找用户

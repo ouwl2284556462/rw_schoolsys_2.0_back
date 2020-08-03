@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService{
 	/**
 	 * 删除用户
 	 */
-	public void deleteUser(String[] ids) {
+	public void deleteUser(Integer[] ids) {
 		userMapper.deleteAccount(ids);
 	}
 
